@@ -1,6 +1,6 @@
 # X++ Tools
 
-<img src="images/icon.png" width="96" alt="X++ Tools icon">
+<img src="https://raw.githubusercontent.com/ThomasWilke/VSCodeXPlusPlusTools/main/images/icon.png" width="96" alt="X++ Tools icon">
 
 
 Syntax highlighting and formatting for **Dynamics 365 Finance & Operations X++** in Visual Studio Code.
@@ -61,11 +61,18 @@ $env:ELECTRON_RUN_AS_NODE=1; & "$env:LOCALAPPDATA\Programs\Microsoft VS Code\Cod
 
 # package & install
 pwsh ./build-vsix.ps1
-code --install-extension .\xpp-language-tools-0.9.0.vsix
+code --install-extension .\xpp-language-tools-1.0.0.vsix
 ```
 
 ### Releasing
 Bump `version` in `package.json`, add a `CHANGELOG.md` entry, commit, then push a matching tag
-(`git tag v0.9.0; git push origin v0.9.0`). The *Release* workflow runs the tests, builds the `.vsix`
-and attaches it to a new GitHub Release.
+(`git tag v1.0.1; git push origin v1.0.1`). The *Release* workflow runs the tests, builds the `.vsix`
+with `vsce`, attaches it to a new GitHub Release and publishes it to:
+
+- **VS Code Marketplace** if the repository secret `VSCE_PAT` exists (Azure DevOps personal access token,
+  organization *All accessible organizations*, scope *Marketplace → Manage*).
+- **Open VSX** if the repository secret `OVSX_PAT` exists (access token from open-vsx.org).
+
+Secrets are added under *Settings → Secrets and variables → Actions*. Without them the workflow only
+creates the GitHub Release. The *CI* workflow builds the package with `vsce` on every push to `main`.
 

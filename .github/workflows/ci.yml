@@ -1,0 +1,27 @@
+name: CI
+
+# Runs on every push to main and on pull requests: tests + a Marketplace-grade
+# package build with vsce, so packaging problems show up before a release tag.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Run tests
+        run: node test/run-tests.js
+
+      - name: Package with vsce
+        run: npx --yes @vscode/vsce@3 package --no-dependencies
+
+      - name: Show package contents
+        run: npx --yes @vscode/vsce@3 ls --no-dependencies

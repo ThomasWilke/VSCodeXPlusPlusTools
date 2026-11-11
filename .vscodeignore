@@ -1,0 +1,8 @@
+.github/**
+.vscode/**
+test/**
+samples/**
+build-vsix.ps1
+*.vsix
+.gitignore
+release-notes.md
