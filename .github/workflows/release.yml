@@ -1,0 +1,48 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run tests
+        run: node test/run-tests.js
+
+      - name: Check tag matches package.json version
+        shell: pwsh
+        run: |
+          $version = (Get-Content package.json -Raw | ConvertFrom-Json).version
+          if ("v$version" -ne $env:GITHUB_REF_NAME) {
+            throw "Tag $env:GITHUB_REF_NAME does not match package.json version $version"
+          }
+
+      - name: Build VSIX
+        shell: pwsh
+        run: ./build-vsix.ps1
+
+      - name: Extract release notes from CHANGELOG
+        shell: pwsh
+        run: |
+          $version = $env:GITHUB_REF_NAME.TrimStart('v')
+          $text = Get-Content CHANGELOG.md -Raw
+          $m = [regex]::Match($text, "(?ms)^## $([regex]::Escape($version))\s*\r?\n(.*?)(?=^## |\z)")
+          $notes = if ($m.Success) { $m.Groups[1].Value.Trim() } else { "Release $version" }
+          $notes += "`n`n**Install:** download the ``.vsix`` below, then run ``code --install-extension xpp-language-tools-$version.vsix`` or use *Extensions → … → Install from VSIX…* in VS Code."
+          Set-Content release-notes.md $notes
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" xpp-language-tools-*.vsix --title "X++ Tools $GITHUB_REF_NAME" --notes-file release-notes.md

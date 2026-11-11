@@ -43,6 +43,12 @@ The formatter only changes whitespace and is idempotent.
 | `xpp.xml.formatStructure` | `true` | Re-indent the XML element structure |
 | `xpp.xml.embeddedIndentSize` | `4` | Indent size for embedded X++ |
 
+## Installation
+
+Download `xpp-language-tools-<version>.vsix` from the
+[latest release](https://github.com/ThomasWilke/VSCodeXPlusPlusTools/releases/latest), then either run
+`code --install-extension xpp-language-tools-<version>.vsix` or use **Extensions → … → Install from VSIX…** in VS Code.
+
 ## Development
 
 No build step: the extension is plain JavaScript.
@@ -55,6 +61,11 @@ $env:ELECTRON_RUN_AS_NODE=1; & "$env:LOCALAPPDATA\Programs\Microsoft VS Code\Cod
 
 # package & install
 pwsh ./build-vsix.ps1
-code --install-extension .\xpp-language-tools-0.1.0.vsix
+code --install-extension .\xpp-language-tools-0.9.0.vsix
 ```
+
+### Releasing
+Bump `version` in `package.json`, add a `CHANGELOG.md` entry, commit, then push a matching tag
+(`git tag v0.9.0; git push origin v0.9.0`). The *Release* workflow runs the tests, builds the `.vsix`
+and attaches it to a new GitHub Release.
 
