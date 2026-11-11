@@ -3,7 +3,7 @@ name: Release
 # Push a tag like v1.2.3 (matching "version" in package.json) to:
 #   1. run the tests and build the .vsix with vsce
 #   2. create a GitHub Release with the .vsix and the CHANGELOG notes
-#   3. publish to the VS Code Marketplace   (only if the VSCE_PAT secret exists)
+#   3. publish to the VS Code Marketplace   (only if the VSCEGITHUBRELEASE or VSCE_PAT secret exists)
 #   4. publish to Open VSX                  (only if the OVSX_PAT secret exists)
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     env:
-      VSCE_PAT: ${{ secrets.VSCE_PAT }}
+      VSCE_PAT: ${{ secrets.VSCEGITHUBRELEASE || secrets.VSCE_PAT }}
       OVSX_PAT: ${{ secrets.OVSX_PAT }}
     steps:
       - uses: actions/checkout@v5

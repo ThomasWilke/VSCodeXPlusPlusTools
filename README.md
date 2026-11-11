@@ -69,7 +69,7 @@ Bump `version` in `package.json`, add a `CHANGELOG.md` entry, commit, then push 
 (`git tag v1.0.1; git push origin v1.0.1`). The *Release* workflow runs the tests, builds the `.vsix`
 with `vsce`, attaches it to a new GitHub Release and publishes it to:
 
-- **VS Code Marketplace** if the repository secret `VSCE_PAT` exists (Azure DevOps personal access token,
+- **VS Code Marketplace** if the repository secret `VSCEGITHUBRELEASE` (or `VSCE_PAT`) exists (Azure DevOps personal access token,
   organization *All accessible organizations*, scope *Marketplace → Manage*).
 - **Open VSX** if the repository secret `OVSX_PAT` exists (access token from open-vsx.org).
 
