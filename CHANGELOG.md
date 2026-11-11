@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.0
+- minor changes - version update
+
 ## 0.9.0
 - Renamed to **X++ Tools**, publisher `tw365-gmbh`, new extension icon.
 - First public release on GitHub; the `.vsix` is attached to each GitHub Release.
