@@ -1,0 +1,304 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "X++",
+  "scopeName": "source.xpp",
+  "patterns": [
+    { "include": "#comments" },
+    { "include": "#preprocessor" },
+    { "include": "#attributes" },
+    { "include": "#strings" },
+    { "include": "#numbers" },
+    { "include": "#class-declaration" },
+    { "include": "#method-declaration" },
+    { "include": "#new-expression" },
+    { "include": "#keywords" },
+    { "include": "#static-access" },
+    { "include": "#builtin-functions" },
+    { "include": "#variable-declaration" },
+    { "include": "#function-call" },
+    { "include": "#member-access" },
+    { "include": "#operators" },
+    { "include": "#punctuation" }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.documentation.xpp",
+          "begin": "///",
+          "end": "$",
+          "beginCaptures": { "0": { "name": "punctuation.definition.comment.xpp" } },
+          "patterns": [
+            { "match": "</?[A-Za-z_][\\w:.-]*(?:\\s+[^>]*)?/?>", "name": "keyword.other.documentation.xpp" }
+          ]
+        },
+        {
+          "name": "comment.block.xpp",
+          "begin": "/\\*",
+          "end": "\\*/",
+          "captures": { "0": { "name": "punctuation.definition.comment.xpp" } }
+        },
+        {
+          "name": "comment.line.double-slash.xpp",
+          "begin": "//",
+          "end": "$",
+          "beginCaptures": { "0": { "name": "punctuation.definition.comment.xpp" } }
+        }
+      ]
+    },
+    "preprocessor": {
+      "patterns": [
+        {
+          "name": "meta.preprocessor.xpp",
+          "match": "(?i)^\\s*(#)(define|undef|undefine|if|ifnot|endif|else|localmacro|globalmacro|endmacro|macrolib|linenumber|defdec|definc)\\b(?:(\\.)([A-Za-z_]\\w*))?",
+          "captures": {
+            "1": { "name": "punctuation.definition.directive.xpp" },
+            "2": { "name": "keyword.control.directive.xpp" },
+            "3": { "name": "punctuation.accessor.xpp" },
+            "4": { "name": "entity.name.function.preprocessor.xpp" }
+          }
+        },
+        {
+          "name": "entity.name.function.preprocessor.macro.xpp",
+          "match": "(#)([A-Za-z_]\\w*)",
+          "captures": { "1": { "name": "punctuation.definition.directive.xpp" } }
+        }
+      ]
+    },
+    "attributes": {
+      "name": "meta.attribute.xpp",
+      "begin": "^\\s*(\\[)(?=\\s*[A-Za-z_])(?=.*\\]\\s*(?://.*)?$)",
+      "end": "\\]",
+      "beginCaptures": { "1": { "name": "punctuation.definition.attribute.begin.xpp" } },
+      "endCaptures": { "0": { "name": "punctuation.definition.attribute.end.xpp" } },
+      "patterns": [
+        { "include": "#strings" },
+        { "include": "#attribute-arguments" },
+        { "match": "[A-Za-z_][\\w.]*", "name": "entity.name.type.attribute.xpp" },
+        { "match": ",", "name": "punctuation.separator.delimiter.xpp" }
+      ]
+    },
+    "attribute-arguments": {
+      "begin": "\\(",
+      "end": "\\)",
+      "beginCaptures": { "0": { "name": "punctuation.parenthesis.open.xpp" } },
+      "endCaptures": { "0": { "name": "punctuation.parenthesis.close.xpp" } },
+      "patterns": [
+        { "include": "#attribute-arguments" },
+        { "include": "$self" }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.verbatim.xpp",
+          "begin": "@\"",
+          "end": "\"(?!\")",
+          "beginCaptures": { "0": { "name": "punctuation.definition.string.begin.xpp" } },
+          "endCaptures": { "0": { "name": "punctuation.definition.string.end.xpp" } },
+          "patterns": [ { "match": "\"\"", "name": "constant.character.escape.xpp" } ]
+        },
+        {
+          "name": "string.quoted.single.verbatim.xpp",
+          "begin": "@'",
+          "end": "'(?!')",
+          "beginCaptures": { "0": { "name": "punctuation.definition.string.begin.xpp" } },
+          "endCaptures": { "0": { "name": "punctuation.definition.string.end.xpp" } },
+          "patterns": [ { "match": "''", "name": "constant.character.escape.xpp" } ]
+        },
+        {
+          "name": "string.quoted.double.xpp",
+          "begin": "\"",
+          "end": "\"|$",
+          "beginCaptures": { "0": { "name": "punctuation.definition.string.begin.xpp" } },
+          "endCaptures": { "0": { "name": "punctuation.definition.string.end.xpp" } },
+          "patterns": [
+            { "include": "#label" },
+            { "include": "#string-escape" },
+            { "include": "#format-placeholder" }
+          ]
+        },
+        {
+          "name": "string.quoted.single.xpp",
+          "begin": "'",
+          "end": "'|$",
+          "beginCaptures": { "0": { "name": "punctuation.definition.string.begin.xpp" } },
+          "endCaptures": { "0": { "name": "punctuation.definition.string.end.xpp" } },
+          "patterns": [
+            { "include": "#label" },
+            { "include": "#string-escape" },
+            { "include": "#format-placeholder" }
+          ]
+        }
+      ]
+    },
+    "label": {
+      "match": "\\G@[A-Za-z_]\\w*(?::[A-Za-z_]\\w*)?",
+      "name": "constant.other.label.xpp"
+    },
+    "string-escape": {
+      "match": "\\\\.",
+      "name": "constant.character.escape.xpp"
+    },
+    "format-placeholder": {
+      "match": "%\\d+",
+      "name": "constant.other.placeholder.xpp"
+    },
+    "numbers": {
+      "patterns": [
+        { "match": "\\b\\d{1,2}\\\\\\d{1,2}\\\\\\d{4}\\b", "name": "constant.numeric.date.xpp" },
+        { "match": "\\b0[xX][0-9a-fA-F]+[uU]?\\b", "name": "constant.numeric.hex.xpp" },
+        { "match": "\\b\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?[uU]?\\b", "name": "constant.numeric.decimal.xpp" }
+      ]
+    },
+    "class-declaration": {
+      "patterns": [
+        {
+          "match": "(?i)\\b(class|interface)\\s+([A-Za-z_]\\w*)",
+          "captures": {
+            "1": { "name": "storage.type.class.xpp" },
+            "2": { "name": "entity.name.type.class.xpp" }
+          }
+        },
+        {
+          "match": "(?i)\\b(extends)\\s+([A-Za-z_][\\w.]*)",
+          "captures": {
+            "1": { "name": "storage.modifier.xpp" },
+            "2": { "name": "entity.other.inherited-class.xpp" }
+          }
+        },
+        {
+          "begin": "(?i)\\b(implements)\\b",
+          "end": "(?=[{;])|$",
+          "beginCaptures": { "1": { "name": "storage.modifier.xpp" } },
+          "patterns": [
+            { "include": "#comments" },
+            { "match": "[A-Za-z_][\\w.]*", "name": "entity.other.inherited-class.xpp" },
+            { "match": ",", "name": "punctuation.separator.delimiter.xpp" }
+          ]
+        }
+      ]
+    },
+    "method-declaration": {
+      "match": "(?i)^\\s*((?:(?:public|private|protected|internal|static|final|abstract|virtual|server|client|display|edit|delegate|hookable|wrappable|replaceable)\\s+)*)(?!(?:return|new|else|throw|case|select|while|next|print|if|for|switch|catch|using)\\b)([A-Za-z_][\\w.]*(?:\\[\\])?)\\s+([A-Za-z_]\\w*)\\s*(?=\\()",
+      "captures": {
+        "1": { "patterns": [ { "include": "#keywords" } ] },
+        "2": { "patterns": [ { "include": "#keywords" }, { "match": "[A-Za-z_][\\w.]*", "name": "entity.name.type.xpp" } ] },
+        "3": { "name": "entity.name.function.xpp" }
+      }
+    },
+    "new-expression": {
+      "match": "(?i)\\b(new)\\s+([A-Za-z_][\\w.]*)",
+      "captures": {
+        "1": { "name": "keyword.operator.new.xpp" },
+        "2": { "name": "entity.name.type.xpp" }
+      }
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "match": "(?i)\\b(if|else|while|do|for|switch|case|default|break|continue|return|try|catch|finally|throw|retry|breakpoint|using|changecompany|unchecked)\\b",
+          "name": "keyword.control.xpp"
+        },
+        {
+          "match": "(?i)\\b(ttsbegin|ttscommit|ttsabort)\\b",
+          "name": "keyword.control.transaction.xpp"
+        },
+        {
+          "match": "(?i)\\b(select|from|where|join|exists|notexists|outer|forupdate|firstonly|firstonly10|firstonly100|firstonly1000|firstfast|nofetch|crosscompany|order|group|by|asc|desc|index|hint|update_recordset|insert_recordset|delete_from|setting|validtimestate|pessimisticlock|optimisticlock|repeatableread|forceliterals|forceplaceholders|forceselectorder|forcenestedloop|generateonly|reverse|sum|count|avg|minof|maxof|next|flush|in)\\b",
+          "name": "keyword.other.sql.xpp"
+        },
+        {
+          "match": "(?i)\\b(public|private|protected|internal|static|final|abstract|virtual|const|readonly|display|edit|server|client|extends|implements|delegate|event|hookable|wrappable|replaceable)\\b",
+          "name": "storage.modifier.xpp"
+        },
+        {
+          "match": "(?i)\\b(void|anytype|boolean|int|int64|real|str|date|utcdatetime|timeofday|guid|container|var|class|interface|enum)\\b",
+          "name": "storage.type.xpp"
+        },
+        {
+          "match": "(?i)\\b(true|false|null)\\b",
+          "name": "constant.language.xpp"
+        },
+        {
+          "match": "(?i)\\b(this|super|element)\\b",
+          "name": "variable.language.xpp"
+        },
+        {
+          "match": "(?i)\\b(new|is|as|mod|div|like|eventhandler)\\b",
+          "name": "keyword.operator.xpp"
+        }
+      ]
+    },
+    "static-access": {
+      "patterns": [
+        {
+          "match": "\\b([A-Za-z_]\\w*)\\s*(::)\\s*([A-Za-z_]\\w*)(?=\\s*\\()",
+          "captures": {
+            "1": { "name": "entity.name.type.xpp" },
+            "2": { "name": "punctuation.accessor.static.xpp" },
+            "3": { "name": "entity.name.function.xpp" }
+          }
+        },
+        {
+          "match": "\\b([A-Za-z_]\\w*)\\s*(::)\\s*([A-Za-z_]\\w*)",
+          "captures": {
+            "1": { "name": "entity.name.type.xpp" },
+            "2": { "name": "punctuation.accessor.static.xpp" },
+            "3": { "name": "variable.other.enummember.xpp" }
+          }
+        }
+      ]
+    },
+    "builtin-functions": {
+      "patterns": [
+        {
+          "match": "(?i)\\b(classStr|classNum|tableStr|tableNum|fieldStr|fieldNum|fieldPName|tableFieldGroupStr|methodStr|staticMethodStr|tableMethodStr|tableStaticMethodStr|formStr|formControlStr|formDataSourceStr|formDataFieldStr|formMethodStr|menuItemDisplayStr|menuItemOutputStr|menuItemActionStr|menuStr|enumStr|enumNum|enumCnt|enumLiteralStr|extendedTypeStr|extendedTypeNum|identifierStr|literalStr|queryStr|queryDatasourceStr|reportStr|ssrsReportStr|dataEntityDataSourceStr|delegateStr|indexStr|indexNum|configurationKeyStr|configurationKeyNum|securityKeyStr|licenseCodeStr|resourceStr|tileStr|workflowTypeStr|varStr|attributeStr|dimensionHierarchyLevelStr|tableCollectionStr|mapStr|viewStr)(?=\\s*\\()",
+          "name": "support.function.intrinsic.xpp"
+        },
+        {
+          "match": "(?i)\\b(info|warning|error|checkFailed|strFmt|curExt|curUserId|today|systemDateGet|con2Str|str2Con|conLen|conPeek|conPoke|conIns|conDel|conFind|conNull|any2Str|any2Int|any2Real|any2Date|int2Str|int642Str|str2Int|str2Int64|num2Str|str2Num|date2Str|str2Date|strLen|subStr|strRep|strUpr|strLwr|strLTrim|strRTrim|strScan|strFind|strDel|strIns|strKeep|strRem|strReplace|strPoke|strAlpha|strCmp|strNFind|abs|min|max|round|decRound|trunc|frac|year|mthOfYr|dayOfMth|dayOfWk|mkDate|dateNull|maxDate|prmIsDefault|setPrefix|newGuid|emptyGuid|isConfigurationkeyEnabled|hasFieldAccess|hasMenuItemAccess|hasTableAccess|appl|infolog|getPrefix|typeOf|enum2Str|guid2Str|str2Guid)(?=\\s*\\()",
+          "name": "support.function.builtin.xpp"
+        }
+      ]
+    },
+    "variable-declaration": {
+      "match": "(?i)\\b([A-Za-z_][\\w.]*)(?=\\s+(?!(?:asc|desc|mod|div|like|in|is|as)\\b)[A-Za-z_]\\w*\\s*[;=,)])",
+      "captures": {
+        "1": { "name": "entity.name.type.xpp" }
+      }
+    },
+    "function-call": {
+      "match": "\\b([A-Za-z_]\\w*)\\s*(?=\\()",
+      "captures": {
+        "1": { "name": "entity.name.function.xpp" }
+      }
+    },
+    "member-access": {
+      "match": "(\\.)([A-Za-z_]\\w*)\\b(?!\\s*\\()",
+      "captures": {
+        "1": { "name": "punctuation.accessor.xpp" },
+        "2": { "name": "variable.other.member.xpp" }
+      }
+    },
+    "operators": {
+      "patterns": [
+        { "match": "==|!=|<=|>=|<<|>>", "name": "keyword.operator.comparison.xpp" },
+        { "match": "&&|\\|\\||!", "name": "keyword.operator.logical.xpp" },
+        { "match": "\\+\\+|--", "name": "keyword.operator.increment.xpp" },
+        { "match": "\\+=|-=|\\*=|/=|\\|=|&=|\\^=|=", "name": "keyword.operator.assignment.xpp" },
+        { "match": "[-+*/%&|^~<>?:]", "name": "keyword.operator.xpp" }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        { "match": ";", "name": "punctuation.terminator.statement.xpp" },
+        { "match": ",", "name": "punctuation.separator.delimiter.xpp" },
+        { "match": "\\.", "name": "punctuation.accessor.xpp" },
+        { "match": "[{}]", "name": "punctuation.curlybrace.xpp" },
+        { "match": "[()]", "name": "punctuation.parenthesis.xpp" },
+        { "match": "[\\[\\]]", "name": "punctuation.squarebracket.xpp" }
+      ]
+    }
+  }
+}

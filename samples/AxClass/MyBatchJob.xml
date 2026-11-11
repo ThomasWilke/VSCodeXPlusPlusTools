@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AxClass xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+<Name>MyBatchJob</Name>
+  <SourceCode>
+      <Declaration><![CDATA[
+/// <summary>
+/// Sample batch job.
+/// </summary>
+[SysObsolete('Use MyNewBatchJob', false)]
+class MyBatchJob extends RunBaseBatch {
+CustAccount accountNum;
+#define.CurrentVersion(1)
+}
+]]></Declaration>
+<Methods>
+<Method>
+<Name>run</Name>
+<Source><![CDATA[
+    public void run() {
+    CustTable custTable;
+    ttsbegin;
+    while select forupdate custTable
+        where custTable.AccountNum == accountNum
+           && custTable.Blocked == CustVendorBlocked::No {
+    custTable.CreditMax=1000;
+    custTable.update();
+    }
+    ttscommit;
+    switch(custTable.Blocked){
+    case CustVendorBlocked::All:
+    warning("@SYS12345");
+    break;
+    default:
+    info(strFmt("%1 done", accountNum));
+    }
+    }
+
+]]></Source>
+</Method>
+</Methods>
+</SourceCode>
+</AxClass>

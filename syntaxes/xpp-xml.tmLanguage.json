@@ -1,0 +1,30 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "X++ Metadata XML",
+  "scopeName": "text.xml.xpp",
+  "patterns": [
+    { "include": "#xpp-source" },
+    { "include": "text.xml" }
+  ],
+  "repository": {
+    "xpp-source": {
+      "comment": "X++ code inside <Source><![CDATA[ ... ]]></Source> and <Declaration><![CDATA[ ... ]]></Declaration>",
+      "begin": "(<)(Source|Declaration)(>)\\s*(<!\\[CDATA\\[)",
+      "end": "(\\]\\]>)(?:\\s*(</)(Source|Declaration)(>))?",
+      "beginCaptures": {
+        "1": { "name": "punctuation.definition.tag.xml" },
+        "2": { "name": "entity.name.tag.localname.xml" },
+        "3": { "name": "punctuation.definition.tag.xml" },
+        "4": { "name": "punctuation.definition.string.begin.xml" }
+      },
+      "endCaptures": {
+        "1": { "name": "punctuation.definition.string.end.xml" },
+        "2": { "name": "punctuation.definition.tag.xml" },
+        "3": { "name": "entity.name.tag.localname.xml" },
+        "4": { "name": "punctuation.definition.tag.xml" }
+      },
+      "contentName": "meta.embedded.block.xpp source.xpp",
+      "patterns": [ { "include": "source.xpp" } ]
+    }
+  }
+}

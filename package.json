@@ -1,0 +1,152 @@
+{
+  "name": "xpp-language-tools",
+  "displayName": "X++ Tools",
+  "description": "Syntax highlighting and formatting for Dynamics 365 Finance & Operations X++ source (.xpp) and AOT metadata XML files.",
+  "version": "0.1.0",
+  "publisher": "tw365-gmbh",
+  "author": {
+    "name": "TW365 GmbH"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ThomasWilke/VSCodeXPlusPlusTools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ThomasWilke/VSCodeXPlusPlusTools/issues"
+  },
+  "homepage": "https://github.com/ThomasWilke/VSCodeXPlusPlusTools#readme",
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#161838",
+    "theme": "dark"
+  },
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Formatters"
+  ],
+  "keywords": [
+    "X++",
+    "xpp",
+    "Dynamics 365",
+    "D365",
+    "Finance and Operations",
+    "AOT"
+  ],
+  "main": "./extension.js",
+  "activationEvents": [
+    "onLanguage:xpp",
+    "onLanguage:xpp-xml"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "xpp",
+        "aliases": [
+          "X++",
+          "xpp"
+        ],
+        "extensions": [
+          ".xpp"
+        ],
+        "configuration": "./language-configuration.json"
+      },
+      {
+        "id": "xpp-xml",
+        "aliases": [
+          "X++ Metadata XML",
+          "AOT XML"
+        ],
+        "filenamePatterns": [
+          "**/Ax*/*.xml"
+        ],
+        "configuration": "./xml-language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "xpp",
+        "scopeName": "source.xpp",
+        "path": "./syntaxes/xpp.tmLanguage.json"
+      },
+      {
+        "language": "xpp-xml",
+        "scopeName": "text.xml.xpp",
+        "path": "./syntaxes/xpp-xml.tmLanguage.json",
+        "embeddedLanguages": {
+          "meta.embedded.block.xpp": "xpp"
+        }
+      }
+    ],
+    "configuration": {
+      "title": "X++ Tools",
+      "properties": {
+        "xpp.format.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable the X++ formatter for .xpp files and embedded X++ code in AOT XML files."
+        },
+        "xpp.format.braceStyle": {
+          "type": "string",
+          "enum": [
+            "allman",
+            "preserve"
+          ],
+          "enumDescriptions": [
+            "Put opening braces on their own line and split '} else' (D365 standard style).",
+            "Keep braces where they are; only fix indentation."
+          ],
+          "default": "allman",
+          "description": "Brace placement applied by the X++ formatter."
+        },
+        "xpp.format.normalizeSpacing": {
+          "type": "boolean",
+          "default": true,
+          "description": "Normalize spaces around commas, parentheses, assignment/comparison operators and after if/while/for/switch/catch. Existing alignment whitespace is kept."
+        },
+        "xpp.format.maxBlankLines": {
+          "type": "integer",
+          "default": 2,
+          "minimum": 0,
+          "description": "Maximum number of consecutive blank lines kept by the X++ formatter."
+        },
+        "xpp.format.indentCaseLabels": {
+          "type": "boolean",
+          "default": true,
+          "description": "Indent 'case'/'default' labels one level inside a switch block."
+        },
+        "xpp.xml.formatEmbeddedCode": {
+          "type": "boolean",
+          "default": true,
+          "description": "Format the X++ code inside <Source> and <Declaration> CDATA sections of AOT XML files."
+        },
+        "xpp.xml.formatStructure": {
+          "type": "boolean",
+          "default": true,
+          "description": "Re-indent the XML element structure of AOT XML files (content and CDATA are never changed)."
+        },
+        "xpp.xml.embeddedIndentSize": {
+          "type": "integer",
+          "default": 4,
+          "minimum": 1,
+          "description": "Indent size (spaces) used for X++ code embedded in AOT XML files."
+        }
+      }
+    },
+    "configurationDefaults": {
+      "[xpp]": {
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true,
+        "editor.defaultFormatter": "tw365-gmbh.xpp-language-tools"
+      },
+      "[xpp-xml]": {
+        "editor.tabSize": 4,
+        "editor.insertSpaces": false,
+        "editor.defaultFormatter": "tw365-gmbh.xpp-language-tools"
+      }
+    }
+  }
+}
